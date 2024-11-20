@@ -6,6 +6,9 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\TransactionsController;
 use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\EmailController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\InvoiceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +30,8 @@ Route::get('/login', function () {
 })->name('login');
 
 Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/register', function () {
     return view('forms.register');
@@ -79,6 +84,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('transactions', [TransactionsController::class, 'store'])->name('transactions.store');
 });
 
+// Route::get('view/forms/rekap', function () {
+//     return view('forms.rekap');
+// })->name('admin.rekap');
+
+Route::get('forms/rekap', [ReportController::class, 'rekap'])->name('rekap.index');
+Route::get('/laporan/rekap', [ReportController::class, 'rekap'])->name('laporan.rekap');
+Route::get('/laporan/cetak', [ReportController::class, 'cetak'])->name('laporan.cetak');
+
 // Route::get('views/forms/calender', function () {
 //     return view('forms.calender');
 // })->name('admin.calender');
@@ -90,6 +103,14 @@ Route::middleware(['auth'])->group(function () {
 Route::get('views/forms/faq', function () {
     return view('forms.faq');
 })->name('admin.faq');
+
+Route::get('views/forms/email', function () {
+    return view('forms.email');
+})->name('admin.email');
+
+Route::get('/email', [EmailController::class, 'create'])->name('email.create');
+Route::post('/email', [EmailController::class, 'store'])->name('email.store');
+
 
 Route::get('views/forms/contacts', function () {
     return view('forms.contacts');
@@ -114,6 +135,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('barang', [BarangController::class, 'store'])->name('barang.store');
 });
 
+Route::get('/barang/{id}', [BarangController::class, 'show']);
+
 Route::get('forms/detailbarang', [BarangController::class, 'detailbarang'])->name('detailbarang.index');
 
 Route::get('views/forms/gallery', function () {
@@ -123,3 +146,19 @@ Route::get('views/forms/gallery', function () {
 Route::get('views/forms/invoice', function () {
     return view('forms.invoice');
 })->name('admin.invoice');
+
+Route::get('/forms/invoice/{transaction_id}', [InvoiceController::class, 'show'])->name('admin.invoice');
+// Route::get('/forms/invoice/invoice-by-date', [InvoiceController::class, 'showByDate'])->name('admin.invoice-by-date');
+
+Route::get('views/forms/invoice2', function () {
+    return view('forms.invoice2');
+})->name('admin.invoice2');
+
+Route::get('/forms/invoice2/{pembelian_id}', [InvoiceController::class, 'show2'])->name('admin.invoice2');
+
+// Route::get('admin/invoice/{id}', [InvoiceController::class, 'show']);
+Route::get('/forms/invoice/pdf/{transaction_id}', [InvoiceController::class, 'generatePDF'])->name('forms.invoice.pdf');
+Route::get('/forms/invoice2/pdf/{pembelian_id}', [InvoiceController::class, 'generatePDF2'])->name('forms.invoice2.pdf');
+
+Route::get('/forms/detail-invoice/pdf/{transaction_id}', [InvoiceController::class, 'generatePDF'])->name('forms.detail-invoice.pdf');
+Route::get('/forms/detail-invoice2/pdf/{pembelian_id}', [InvoiceController::class, 'generatePDF2'])->name('forms.detail-invoice2.pdf');

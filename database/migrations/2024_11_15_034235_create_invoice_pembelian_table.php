@@ -9,25 +9,25 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('transactions', function (Blueprint $table) {
+        Schema::create('invoice_pembelian', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('id_barang');
-            $table->string('transaction_type');
-            $table->decimal('amount', 8, 2);
+            $table->unsignedBigInteger('id_pembelian');
+            $table->string('kode_invoice');
             $table->timestamps();
 
+            // Foreign key constraints
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('id_barang')->references('id')->on('barang')->onDelete('cascade');
+            $table->foreign('id_pembelian')->references('id')->on('pembelian')->onDelete('cascade');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('transactions');
+        Schema::dropIfExists('invoice_pembelian');
     }
 };

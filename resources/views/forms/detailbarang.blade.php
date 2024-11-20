@@ -17,9 +17,6 @@
     <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
 
     <style>
-        .navbar-nav .nav-link {
-            color: blue !important;
-        }
         .brand-link {
             font-size: 1.2rem;
         }
@@ -86,7 +83,7 @@
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="../../index3.html" class="nav-link" style="color: blue;">Home</a>
+                    <a href="{{route('admin.dashboard')}}" class="nav-link" style="color: blue;">Home</a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
                     <a href="#" class="nav-link" style="color: blue;">Contact</a>
@@ -96,26 +93,6 @@
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
                 <!-- Navbar Search -->
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="navbar-search" href="#" role="button">
-                        <i class="fas fa-search"></i>
-                    </a>
-                    <div class="navbar-search-block">
-                        <form class="form-inline">
-                            <div class="input-group input-group-sm">
-                                <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-                                <div class="input-group-append">
-                                    <button class="btn btn-navbar" type="submit">
-                                        <i class="fas fa-search"></i>
-                                    </button>
-                                    <button class="btn btn-navbar" type="button" data-widget="navbar-search">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </li>
 
                 <!-- Messages Dropdown Menu -->
                 <li class="nav-item dropdown">
@@ -334,12 +311,6 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{route('admin.invoice')}}" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Invoice</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
                                     <a href="{{route('admin.faq')}}" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>FAQ</p>
@@ -367,7 +338,7 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>Data Transaksi</h1>
+                            <h1>Data Barang</h1>
                         </div>
                         <div class="col-sm-6">
                             {{-- <ol class="breadcrumb float-sm-right">
@@ -399,8 +370,10 @@
                                             <th>No</th>
                                             <th>Kode Barang</th>
                                             <th>Nama</th>
-                                            <th>Kategori Barang</th>
-                                            <th>Stok</th>
+                                            <th>Satuan</th>
+                                            <th>Jenis Barang</th>
+                                            <th>Stok Masuk</th>
+                                            <th>Stok Keluar</th>
                                             <th>Supplier</th>
                                             <th>Harga</th>
                                         </tr>
@@ -411,8 +384,10 @@
                                             <td>{{ $barang->id }}</td>
                                             <td>{{ $barang->kode_barang }}</td>
                                             <td>{{ $barang->nama }}</td>
+                                            <td>{{ $barang->satuan }}</td>
                                             <td>{{ $barang->kategori }}</td>
-                                            <td>{{ $barang->stok }}</td>
+                                            <td>{{ $barang->stok_masuk }}</td>
+                                            <td>{{ $barang->stok_keluar }}</td>
                                             <td>{{ $barang->supplier }}</td>
                                             <td>{{ $barang->harga }}</td>
                                             {{-- <td>

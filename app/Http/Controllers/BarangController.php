@@ -21,7 +21,7 @@ class BarangController extends Controller
     public function detailBarang()
     {
         $barang = Barang::all();
-        return view ('forms.detailbarang', compact('barang'));
+        return view('forms.detailbarang', compact('barang'));
     }
 
     /**
@@ -39,33 +39,53 @@ class BarangController extends Controller
     {
         //dd($request->all());
         $request->validate([
-            'kode_barang' => 'required',
             'nama_barang' => 'required',
+            'satuan' => 'required',
             'kategori' => 'required',
-            'stok' => 'required',
+            'stok_masuk' => 'required',
+            'stok_keluar' => 'required',
             'supplier' => 'required',
-            'harga' => 'required',
+            'harga_beli' => 'required',
+            'harga_jual' => 'required',
         ]);
+
+        $kode_barang = $this->generateKodeBarang($request->kategori);
 
         Barang::create([
             'id' => Auth::id(),
-            'kode_barang' => $request->kode_barang,
+            'kode_barang' => $kode_barang,
             'nama' => $request->nama_barang,
+            'satuan' => $request->satuan,
             'kategori' => $request->kategori,
-            'stok' => $request->stok,
+            'stok_masuk' => $request->stok_masuk,
+            'stok_keluar' => $request->stok_keluar,
             'supplier' => $request->supplier,
-            'harga' => $request->harga,
+            'harga_beli' => $request->harga_beli,
+            'harga_jual' => $request->harga_jual,
         ]);
 
-        return redirect()->route('barang.index')->with('success', 'Data Barang recorded successfully');
+        return redirect()->route('detailbarang.index')->with('success', 'Data Barang recorded successfully');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Barang $barang)
+    public function show($id)
     {
-        return view('barang.show', compact('barang'));
+        $barang = Barang::find($id);
+        if (!$barang) {
+            return response()->json(['error' => 'Barang not found'], 404);
+        }
+
+        return response()->json([
+            'id' => $barang->id,
+            'nama' => $barang->nama,
+            'jenis' => $barang->kategori,
+            'satuan' => $barang->satuan,
+            'harga_jual' => $barang->harga_jual,
+            'harga_beli' => $barang->harga_beli,
+            'stok' => $barang->stok,
+        ]);
     }
 
     /**
@@ -100,5 +120,26 @@ class BarangController extends Controller
         $barang->delete();
 
         return redirect()->route('forms.barang')->with('success', 'Barang deleted successfully.');
+    }
+
+    private function generateKodeBarang($kategori)
+    {
+        // Ambil item terakhir berdasarkan kategori untuk mengambil kode terakhir
+        $barangTerakhir = Barang::where('kategori', $kategori)->orderBy('id', 'desc')->first();
+
+        // Inisialisasi awalan kode berdasarkan kategori
+        $prefix = strtoupper(substr($kategori, 0, 3)); // Mengambil 3 huruf pertama dari kategori
+
+        // Jika barang terakhir tidak ditemukan, mulai dari 001
+        if (!$barangTerakhir) {
+            return $prefix . '001';
+        }
+
+        // Ambil nomor urutan terakhir dari kode barang dan tambahkan 1
+        $nomorTerakhir = substr($barangTerakhir->kode_barang, 3); // Ambil bagian angka dari kode_barang
+        $nomorBaru = str_pad((int) $nomorTerakhir + 1, 3, '0', STR_PAD_LEFT); // Tambahkan 1 dan format ke 3 digit
+
+        // Gabungkan prefix dan nomor baru
+        return $prefix . $nomorBaru;
     }
 }

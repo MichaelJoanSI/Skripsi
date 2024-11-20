@@ -77,6 +77,46 @@
         }
     }
 
+    .lead-date {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .table-summary th,
+    .table-summary td {
+        padding: 10px;
+        vertical-align: middle;
+    }
+
+    .table-summary th {
+        width: 50%;
+        text-align: left;
+        font-weight: bold;
+        color: #555;
+    }
+
+    .table-summary td {
+        text-align: right;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .table-summary tr:last-child td,
+    .table-summary tr:last-child th {
+        border-top: 2px solid #333;
+        font-size: 1.1rem;
+    }
+
+    .table-summary-container {
+        width: 100%;
+        max-width: 500px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+    }
+
     table {
         width: 100%;
         border-collapse: collapse;
@@ -303,18 +343,8 @@
                     <div class="image">
                         <img src="../../dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
                     </div>
-                    @php
-                        // Mengambil data pengguna yang sedang login
-                        $user = Auth::user();
-                    @endphp
                     <div class="info">
-                        @if ($user)
-                            <a href="#" class="d-block">{{ $user->name }}</a>
-                            <!-- Menampilkan nama user yang login -->
-                        @else
-                            <a href="#" class="d-block">Guest</a>
-                            <!-- Tampilkan "Guest" jika tidak ada user yang login -->
-                        @endif
+                        <a href="#" class="d-block">Michael Joan R</a>
                     </div>
                 </div>
 
@@ -459,13 +489,12 @@
                                 <h5><i class="fas fa-info"></i> Note:</h5>
                                 Ini adalah bukti surat keterangan
                             </div>
-
                             <!-- Main content -->
                             <div class="invoice p-3 mb-3">
                                 <!-- title row -->
                                 <div class="row">
                                     @php
-                                        $transaction = App\Models\Transactions::all();
+                                        $pembelian = App\Models\Pembelian::all();
                                     @endphp
                                     <div class="col-12">
                                         <h4>
@@ -494,10 +523,9 @@
                                             Email: michaeljr269@gmail.com
                                         </address>
                                     </div> --}}
-                                    
                                     @php
                                         // Pastikan untuk mengambil satu data invoice, misalnya invoice pertama
-                                        // $invoice = App\Models\Invoice::first();
+                                        // $invoice = App\Models\InvoicePembelian::first();
                                         $user = Auth::user();
                                     @endphp
                                     <div class="col-sm-4 invoice-col">
@@ -506,170 +534,168 @@
                                         @else
                                             <b>Invoice tidak ditemukan.</b><br>
                                         @endif --}}
-                                    <b>Order ID:</b> {{ $invoice->id_transaksi }}<br>
+                                    <b>Order ID:</b> {{ $invoice->id_pembelian }}<br>
                                     {{-- <b>Payment Due:</b> {{ $tanggal }}<br> --}}
                                     <b>Account:</b> {{$user->name}}
                                 </div>
                             </div>
-                            <!-- First Table: Penjualan -->
-                            <div class="container mt-4">
-                                <h3>Detail Invoice</h3>
-                                <p><strong>Tanggal Transaksi:</strong> {{ $tanggal }}</p>
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Kode Penjualan</th>
-                                            <th>Nama Barang</th>
-                                            <th>Satuan</th>
-                                            <th>Keterangan</th>
-                                            <th>Harga</th>
-                                            <th>Quantity</th>
-                                            <th>Sub Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse ($relatedInvoices as $relatedInvoice)
+                                <!-- First Table: Penjualan -->
+                                <div class="container mt-4">
+                                    <h3>Detail Invoice</h3>
+                                    {{-- <p><strong>Tanggal Transaksi:</strong> {{ $tanggal }}</p> --}}
+                                    <table class="table table-striped">
+                                        <thead>
                                             <tr>
-                                                <td>{{ $relatedInvoice->kode_penjualan }}</td>
-                                                <td>{{ $relatedInvoice->nama_transaction }}</td>
-                                                <td>{{ $relatedInvoice->satuan }}</td>
-                                                <td>{{ $relatedInvoice->jenis }}</td>
-                                                <td>Rp. {{ number_format($relatedInvoice->harga_jual, 2, ',', '.') }}</td>
-                                                <td>{{ $relatedInvoice->quantity }}</td>
-                                                <td>Rp. {{ number_format($relatedInvoice->sub_total, 2, ',', '.') }}</td>
+                                                <th>Kode Pembelian</th>
+                                                <th>Nama Barang</th>
+                                                <th>Satuan</th>
+                                                <th>Harga Beli</th>
+                                                <th>Quantity</th>
+                                                <th>Total Pembelian</th>
                                             </tr>
-                                        @empty
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($relatedInvoices as $relatedInvoice)
+                                            <tr>
+                                                <td>{{ $relatedInvoice->kode_pembelian }}</td>
+                                                <td>{{ $relatedInvoice->nama_barang }}</td>
+                                                <td>{{ $relatedInvoice->satuan }}</td>
+                                                <td>Rp.{{ number_format($relatedInvoice->harga_beli, 2) }}</td>
+                                                <td>{{ $relatedInvoice->quantity }}</td>
+                                                <td>Rp.{{ number_format($relatedInvoice->sub_total, 2) }}</td>
+                                            </tr>
+                                            @empty
                                             <tr>
                                                 <td colspan="7" class="text-center">Tidak ada transaksi lain pada tanggal ini.</td>
                                             </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <!-- Perhitungan Total, Pajak, dan Pengiriman -->
-                            <div class="col-6 mt-4">
-                                @php
-                                    use Carbon\Carbon;
-                            
-                                    // Inisialisasi subtotal
-                                    $totalSubtotal = 0;
-                            
-                                    // Hitung total subtotal dari semua transaksi terkait
-                                    foreach ($relatedInvoices as $relatedInvoice) {
-                                        $totalSubtotal += $relatedInvoice->sub_total; // Ambil subtotal dari setiap transaksi
-                                    }
-                            
-                                    // Ambil tanggal sekarang
-                                    $currentDate = Carbon::now();
-                            
-                                    // Cek apakah diskon berlaku berdasarkan waktu (contoh: hanya berlaku akhir pekan)
-                                    $isDiskonBerlakuWaktu = $currentDate->isWeekend(); // Diskon hanya berlaku di akhir pekan (Sabtu, Minggu)
-                            
-                                    // Cek apakah diskon berlaku berdasarkan subtotal
-                                    $isDiskonBerlakuHarga = $totalSubtotal > 100000; // Diskon berlaku jika subtotal melebihi 100 ribu
-                            
-                                    // Inisialisasi diskon
-                                    $diskonPersen = 0;
-                            
-                                    // Logika diskon hanya jika salah satu atau kedua syarat terpenuhi
-                                    if ($isDiskonBerlakuWaktu || $isDiskonBerlakuHarga) {
-                                        // Logika diskon berdasarkan subtotal
-                                        if ($totalSubtotal > 1000000) {
-                                            $diskonPersen = 20; // Diskon 20% jika subtotal lebih dari 1 juta
-                                        } elseif ($totalSubtotal > 500000) {
-                                            $diskonPersen = 15; // Diskon 15% jika subtotal lebih dari 500 ribu
-                                        } elseif ($totalSubtotal > 100000) {
-                                            $diskonPersen = 5; // Diskon 5% jika subtotal lebih dari 100 ribu
-                                        }
-                                    }
-                            
-                                    // Hitung jumlah diskon
-                                    $diskon = $totalSubtotal * ($diskonPersen / 100);
-                            
-                                    // Subtotal setelah diskon
-                                    $totalSubtotalSetelahDiskon = $totalSubtotal - $diskon;
-                            
-                                    // Biaya tambahan (contoh)
-                                    $biayaTambahan = 50000; // Sesuaikan dengan kebutuhan
-                            
-                                    // Perhitungan pajak 5%
-                                    $tax = $totalSubtotalSetelahDiskon * 0.05;
-                            
-                                    // Biaya pengiriman
-                                    $shipping = 20000; // Sesuaikan dengan kebutuhan
-                            
-                                    // Total akhir
-                                    $total = $totalSubtotalSetelahDiskon + $tax + $shipping + $biayaTambahan;
-                                @endphp
-                            
-                                {{-- Tabel Ringkasan --}}
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <tr>
-                                            <th style="width:50%">Subtotal:</th>
-                                            <td>Rp.{{ number_format($totalSubtotal, 2) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Diskon ({{ $diskonPersen }}%):</th>
-                                            <td>Rp.{{ number_format($diskon, 2) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Total Setelah Diskon:</th>
-                                            <td>Rp.{{ number_format($totalSubtotalSetelahDiskon, 2) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Biaya Tambahan:</th>
-                                            <td>Rp.{{ number_format($biayaTambahan, 2) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Total:</th>
-                                            <td>Rp.{{ number_format($total, 2) }}</td>
-                                        </tr>
+                                            @endforelse
+                                        </tbody>
                                     </table>
                                 </div>
-                            
-                                {{-- Informasi Diskon --}}
-                                @if ($diskonPersen > 0)
-                                    <p class="text-success">
-                                        Diskon berlaku! 
-                                        @if ($isDiskonBerlakuWaktu && $isDiskonBerlakuHarga)
-                                            Diskon diberikan karena hari ini adalah akhir pekan **dan** subtotal memenuhi ketentuan harga.
-                                        @elseif ($isDiskonBerlakuWaktu)
-                                            Diskon diberikan karena hari ini adalah akhir pekan.
-                                        @elseif ($isDiskonBerlakuHarga)
-                                            Diskon diberikan karena subtotal memenuhi ketentuan harga.
-                                        @endif
-                                    </p>
-                                @else
-                                    <p class="text-danger">Anda Tidak Mendapatkan Diskon</p>
-                                @endif
+
+                                <!-- Payment Summary -->
+                                <div class="col-6 mt-4">
+                                    @php
+                                        use Carbon\Carbon;
+                                
+                                        // Inisialisasi subtotal
+                                        $totalSubtotal = 0;
+                                
+                                        // Hitung total subtotal dari semua transaksi terkait
+                                        foreach ($relatedInvoices as $relatedInvoice) {
+                                            $totalSubtotal += $relatedInvoice->sub_total; // Ambil subtotal dari setiap transaksi
+                                        }
+                                
+                                        // Ambil tanggal sekarang
+                                        $currentDate = Carbon::now();
+                                
+                                        // Cek apakah diskon berlaku berdasarkan waktu (contoh: hanya berlaku akhir pekan)
+                                        $isDiskonBerlakuWaktu = $currentDate->isWeekend(); // Diskon hanya berlaku di akhir pekan (Sabtu, Minggu)
+                                
+                                        // Cek apakah diskon berlaku berdasarkan subtotal
+                                        $isDiskonBerlakuHarga = $totalSubtotal > 100000; // Diskon berlaku jika subtotal melebihi 100 ribu
+                                
+                                        // Inisialisasi diskon
+                                        $diskonPersen = 0;
+                                
+                                        // Logika diskon hanya jika salah satu atau kedua syarat terpenuhi
+                                        if ($isDiskonBerlakuWaktu || $isDiskonBerlakuHarga) {
+                                            // Logika diskon berdasarkan subtotal
+                                            if ($totalSubtotal > 1000000) {
+                                                $diskonPersen = 20; // Diskon 20% jika subtotal lebih dari 1 juta
+                                            } elseif ($totalSubtotal > 500000) {
+                                                $diskonPersen = 15; // Diskon 15% jika subtotal lebih dari 500 ribu
+                                            } elseif ($totalSubtotal > 100000) {
+                                                $diskonPersen = 5; // Diskon 5% jika subtotal lebih dari 100 ribu
+                                            }
+                                        }
+                                
+                                        // Hitung jumlah diskon
+                                        $diskon = $totalSubtotal * ($diskonPersen / 100);
+                                
+                                        // Subtotal setelah diskon
+                                        $totalSubtotalSetelahDiskon = $totalSubtotal - $diskon;
+                                
+                                        // Biaya tambahan (contoh)
+                                        $biayaTambahan = 50000; // Sesuaikan dengan kebutuhan
+                                
+                                        // Perhitungan pajak 5%
+                                        $tax = $totalSubtotalSetelahDiskon * 0.05;
+                                
+                                        // Biaya pengiriman
+                                        $shipping = 20000; // Sesuaikan dengan kebutuhan
+                                
+                                        // Total akhir
+                                        $total = $totalSubtotalSetelahDiskon + $tax + $shipping + $biayaTambahan;
+                                    @endphp
+                                
+                                    {{-- Tabel Ringkasan --}}
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <tr>
+                                                <th style="width:50%">Subtotal:</th>
+                                                <td>Rp.{{ number_format($totalSubtotal, 2) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Diskon ({{ $diskonPersen }}%):</th>
+                                                <td>Rp.{{ number_format($diskon, 2) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Total Setelah Diskon:</th>
+                                                <td>Rp.{{ number_format($totalSubtotalSetelahDiskon, 2) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Biaya Tambahan:</th>
+                                                <td>Rp.{{ number_format($biayaTambahan, 2) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Total:</th>
+                                                <td>Rp.{{ number_format($total, 2) }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                
+                                    {{-- Informasi Diskon --}}
+                                    @if ($diskonPersen > 0)
+                                        <p class="text-success">
+                                            Diskon berlaku! 
+                                            @if ($isDiskonBerlakuWaktu && $isDiskonBerlakuHarga)
+                                                Diskon diberikan karena hari ini adalah akhir pekan **dan** subtotal memenuhi ketentuan harga.
+                                            @elseif ($isDiskonBerlakuWaktu)
+                                                Diskon diberikan karena hari ini adalah akhir pekan.
+                                            @elseif ($isDiskonBerlakuHarga)
+                                                Diskon diberikan karena subtotal memenuhi ketentuan harga.
+                                            @endif
+                                        </p>
+                                    @else
+                                        <p class="text-danger">Anda Mendapatkan Diskon.</p>
+                                    @endif
+                                </div>
+
+                                <!-- Buttons for Print and Payment -->
+                                <div class="row no-print left-aligned-buttons">
+                                    <button type="button" class="btn btn-primary" id="generate-pdf-btn"
+                                        data-id="{{ $invoice->id }}">
+                                        <i class="fas fa-download"></i> Generate PDF
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                        <!-- Buttons for Print and Payment -->
-                        <div class="row no-print left-aligned-buttons">
-                            <button type="button" class="btn btn-primary" id="generate-pdf-btn"
-                                data-id="{{ $invoice->id }}">
-                                <i class="fas fa-download"></i> Generate PDF
-                            </button>
                         </div>
                     </div>
                 </div>
+            </section>
+            <!-- /.content -->
         </div>
-    </div>
-    </section>
-    <!-- /.content -->
-    </div>
-    <!-- /.content-wrapper -->
-    <footer class="main-footer no-print">
-        <strong>TOKO BERKAT.</strong> All rights reserved.
-    </footer>
+        <!-- /.content-wrapper -->
+        <footer class="main-footer no-print">
+            <strong>TOKO BERKAT.</strong> All rights reserved.
+        </footer>
 
-    <!-- Control Sidebar -->
-    <aside class="control-sidebar control-sidebar-//dark">
-        <!-- Control sidebar content goes here -->
-    </aside>
-    <!-- /.control-sidebar -->
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-//dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
     </div>
     <!-- ./wrapper -->
 
@@ -681,13 +707,27 @@
     <script src="../../dist/js/adminlte.min.js"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="../../dist/js/demo.js"></script>
+    @section('scripts')
+        <script>
+            // Script to toggle between tables
+            document.getElementById('penjualanLink').addEventListener('click', function() {
+                document.getElementById('penjualanTable').style.display = 'block';
+                document.getElementById('furnitureTable').style.display = 'none';
+            });
+
+            document.getElementById('furnitureLink').addEventListener('click', function() {
+                document.getElementById('penjualanTable').style.display = 'none';
+                document.getElementById('furnitureTable').style.display = 'block';
+            });
+        </script>
+    @endsection
     <script>
         document.getElementById('generate-pdf-btn').addEventListener('click', function() {
-            const transactionId = this.getAttribute('data-id');
-            if (transactionId) {
-                window.location.href = `/forms/invoice/pdf/${transactionId}`;
+            const pembelianId = this.getAttribute('data-id');
+            if (pembelianId) {
+                window.location.href = `/forms/invoice2/pdf/${pembelianId}`;
             } else {
-                console.error('ID transaksi tidak ditemukan.');
+                console.error('ID pembelian tidak ditemukan.');
             }
         });
     </script>

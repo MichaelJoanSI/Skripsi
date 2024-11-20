@@ -10,6 +10,7 @@ class Pembelian extends Model
     use HasFactory;
 
     protected $table = 'pembelian';
+    
     protected $fillable = [
         'user_id',
         'kode_pembelian',
@@ -18,7 +19,13 @@ class Pembelian extends Model
         'tgl_keluar',
         'satuan',
         'harga_beli',
+        'quantity',
         'sub_total',
 
     ];
+
+    public function barang()
+    {
+        return $this->belongsTo(Barang::class, 'id_barang', 'id'); // Adjust the foreign key and local key as necessary
+    }
 }

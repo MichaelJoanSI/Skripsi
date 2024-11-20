@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         //dd($request->all());
         $request->validate([
             'email' => 'required|email',
@@ -24,5 +25,20 @@ class AuthController extends Controller
         return back()->withErrors([
             'email' => 'Email atau password salah.',
         ]);
+    }
+
+    public function logout(Request $request)
+    {
+        // Logout user
+        Auth::logout();
+
+        // Invalidate the session
+        $request->session()->invalidate();
+
+        // Regenerate CSRF token
+        $request->session()->regenerateToken();
+
+        // Redirect ke halaman login
+        return redirect('/login')->with('success', 'Anda telah berhasil logout.');
     }
 }
